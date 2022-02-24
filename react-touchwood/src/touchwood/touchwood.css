@@ -1,0 +1,39 @@
+.slider-container {
+    width: 100%;
+    height: 100%;
+    
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.carousel {
+    height: 100% !important;
+}
+
+.carousel-inner {
+    height: 100% !important;
+}
+
+.carousel-item {
+    height: 100% !important;
+}
+
+.carousel-image {
+    height: 100% !important;
+}
+
+.top-right-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px 10px 10px 10px;
+    z-index: 2;
+}
+
+.quote-text {
+    font-size: 3.0vh;
+    font-style: italic;
+    border: black 2px;
+    background-color: rgba(0, 0, 0, 0.3);   
+}

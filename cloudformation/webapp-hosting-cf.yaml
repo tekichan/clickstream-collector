@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      BucketName: 
+        Ref: BucketNameParam
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+    DeletionPolicy: Delete
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref S3Bucket
+                - /*
+      Bucket: !Ref S3Bucket
+  S3BucketLog:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: LogDeliveryWrite
+      BucketName: !Join 
+              - ''
+              - - !Ref S3Bucket
+                - '-log'
+    DeletionPolicy: Delete      
+  S3WebsiteDistrib:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+        - Id: S3WebsiteOrigin
+          DomainName: !Join 
+              - ''
+              - - !Ref S3Bucket
+                - '.s3-website.'
+                - !Ref "AWS::Region"
+                - '.amazonaws.com'
+          CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+            OriginProtocolPolicy: http-only
+        Enabled: 'true'
+        Comment: Distribution Configuration for S3 Website Enabled
+        DefaultRootObject: index.html
+        Logging:
+          IncludeCookies: 'true'
+          Bucket: !Join 
+              - ''
+              - - !Ref S3BucketLog
+                - '.s3.amazonaws.com'
+          Prefix: access
+        DefaultCacheBehavior:
+          TargetOriginId: S3WebsiteOrigin
+          ForwardedValues:
+            QueryString: 'true'
+            Cookies:
+              Forward: all
+          ViewerProtocolPolicy: allow-all
+          MinTTL: '100'
+          SmoothStreaming: 'true'
+        CustomErrorResponses:
+        - ErrorCode: '404'
+          ResponsePagePath: "/error.html"
+          ResponseCode: '200'
+          ErrorCachingMinTTL: '30'
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
+Outputs:
+  S3WebsiteURL:
+    Value: !GetAtt 
+      - S3Bucket
+      - WebsiteURL
+    Description: URL for website hosted on S3
+  DistroWebsiteURL:
+    Value: !GetAtt
+      - S3WebsiteDistrib
+      - DomainName
+    Description: URL Domain Name from CloudFront
+Parameters:
+  BucketNameParam:
+    Type: String
+    Description: S3 Bucket Name 
