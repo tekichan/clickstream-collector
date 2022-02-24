@@ -2,6 +2,8 @@
 
 This web app is inspired by a TV programme called [In Geek We Trust](https://en.wikipedia.org/wiki/In_Geek_We_Trust). An app called **Touchwood App** was used for fun inside the programme.
 
+Let's try the demo at [https://tekichan.github.io/clickstream-collector/](https://tekichan.github.io/clickstream-collector/)
+
 ![Touchwood App](./touchwood-app-demo.gif)
 
 > My mother advised me to TOUCHWOOD when saying bad luck. Like me, we may say many things wrong and experience unlucky stuff everyday but cannot always find wood to TOUCHWOOD.
@@ -33,8 +35,9 @@ Or install from scratch after [create-react-app](https://reactjs.org/docs/create
 ```bash
 npm install react-bootstrap bootstrap
 npm install bootstrap-icons
-npm install --save-dev miragejs
+npm install miragejs --save-dev 
 npm install jsrsasign
+npm install gh-pages --save-dev
 ```
 
 # Credits
